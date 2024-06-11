@@ -91,7 +91,7 @@ bool AP_Arming_Plane::pre_arm_checks(bool display_failure)
         ret = false;
     }
 
-    if (plane.aparm.airspeed_min < MIN_AIRSPEED_MIN) {
+    if ((check_enabled(ARMING_CHECK_PARAMETERS)) && (plane.aparm.airspeed_min < MIN_AIRSPEED_MIN)) {
         check_failed(display_failure, "AIRSPEED_MIN too low (%i < %i)", plane.aparm.airspeed_min.get(), MIN_AIRSPEED_MIN);
         ret = false;
     }
