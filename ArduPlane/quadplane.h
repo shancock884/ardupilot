@@ -316,6 +316,7 @@ private:
     AP_Float transition_decel;
     AP_Float descend_dist_threshold;
     AP_Float descend_speed_threshold;
+    AP_Float overshoot_threshold;
 
     // transition failure handling
     struct TRANS_FAIL {

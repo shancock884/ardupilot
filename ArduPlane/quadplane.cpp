@@ -542,6 +542,8 @@ const AP_Param::GroupInfo QuadPlane::var_info2[] = {
 
     AP_GROUPINFO("LAND_SPD_THR", 40, QuadPlane, descend_speed_threshold, 3.0f),
 
+    AP_GROUPINFO("LAND_OSHT_THR", 41, QuadPlane, overshoot_threshold, 2.0f),
+
     AP_GROUPEND
 };
 
@@ -2664,13 +2666,15 @@ void QuadPlane::vtol_position_controller(void)
             target_speed_xy_cms = diff_wp_norm * target_speed * 100;
             target_accel_cms = diff_wp_norm * (-target_accel*100);
             target_yaw_deg = degrees(diff_wp_norm.angle());
-            const float yaw_err_deg = wrap_180(target_yaw_deg - degrees(plane.ahrs.get_yaw()));
-            bool overshoot = (closing_groundspeed < 0 || fabsf(yaw_err_deg) > 60);
-            if (overshoot && !poscontrol.overshoot) {
-                gcs().send_text(MAV_SEVERITY_INFO,"VTOL Overshoot d=%.1f cs=%.1f yerr=%.1f",
-                                distance, closing_groundspeed, yaw_err_deg);
-                poscontrol.overshoot = true;
-                pos_control->set_accel_desired_xy_cmss(Vector2f());
+            if (!poscontrol.overshoot) {
+                const float yaw_err_deg = wrap_180(target_yaw_deg - degrees(plane.ahrs.get_yaw()));
+                bool overshoot = (distance > overshoot_threshold) && (closing_groundspeed < 0 || fabsf(yaw_err_deg) > 60);
+                if (overshoot) {
+                    gcs().send_text(MAV_SEVERITY_INFO,"VTOL Overshoot d=%.1f cs=%.1f yerr=%.1f",
+                                    distance, closing_groundspeed, yaw_err_deg);
+                    poscontrol.overshoot = true;
+                    pos_control->set_accel_desired_xy_cmss(Vector2f());
+                }
             }
             if (poscontrol.overshoot) {
                 /* we have overshot the landing point or our nose is
