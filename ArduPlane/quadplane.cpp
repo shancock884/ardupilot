@@ -538,6 +538,10 @@ const AP_Param::GroupInfo QuadPlane::var_info2[] = {
     // @User: Standard
     AP_GROUPINFO("BCK_PIT_LIM", 38, QuadPlane, q_bck_pitch_lim, 10.0f),
 
+    AP_GROUPINFO("LAND_DIST_THR", 39, QuadPlane, descend_dist_threshold, 2.0f),
+
+    AP_GROUPINFO("LAND_SPD_THR", 40, QuadPlane, descend_speed_threshold, 3.0f),
+
     AP_GROUPEND
 };
 
@@ -3624,8 +3628,6 @@ bool QuadPlane::verify_vtol_land(void)
 
     if (poscontrol.get_state() == QPOS_POSITION2) {
         // see if we should move onto the descend stage of landing
-        const float descend_dist_threshold = 2.0;
-        const float descend_speed_threshold = 3.0;
         bool reached_position = false;
         if (poscontrol.pilot_correction_done) {
             reached_position = !poscontrol.pilot_correction_active;
