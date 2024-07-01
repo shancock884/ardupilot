@@ -3996,6 +3996,7 @@ class AutoTestPlane(vehicle_test_suite.TestSuite):
             self.fly_mission(mission_file, strict=False, quadplane=quadplane, mission_timeout=400.0)
             self.wait_disarmed()
 
+
     def RCDisableAirspeedUse(self):
         '''Test RC DisableAirspeedUse option'''
         self.set_parameter("RC9_OPTION", 106)
@@ -5318,6 +5319,43 @@ class AutoTestPlane(vehicle_test_suite.TestSuite):
         home = self.home_position_as_mav_location()
         self.assert_distance(home, adsb_vehicle_loc, 0, 10000)
 
+    def TailsitterTest(self):
+        '''Fly tailsitter test'''
+        vinfo = vehicleinfo.VehicleInfo()
+        vinfo_options = vinfo.options[self.vehicleinfo_key()]
+        frame = 'quadplane-copter_tailsitter'
+        #frame = 'quadplane'
+        self.start_subtest("Testing frame (%s)" % str(frame))
+        frame_bits = vinfo_options["frames"][frame]
+        print("frame_bits: %s" % str(frame_bits))
+        model = frame_bits.get("model", frame)
+        # the model string for Callisto has crap in it.... we
+        # should really have another entry in the vehicleinfo data
+        # to carry the path to the JSON.
+        actual_model = model.split(":")[0]
+        defaults = self.model_defaults_filepath(actual_model)
+        if not isinstance(defaults, list):
+            defaults = [defaults]
+        self.customise_SITL_commandline(
+            ["--defaults", ','.join(defaults), ],
+            model=model,
+            wipe=True,
+        )
+        mission_file = "basic.txt"
+        quadplane = self.get_parameter('Q_ENABLE')
+        if quadplane:
+            #mission_file = "basic-quadplane.txt"
+            mission_file = "auto-app.txt"
+        tailsitter = self.get_parameter('Q_TAILSIT_ENABLE')
+        if tailsitter:
+            # tailsitter needs extra re-boot to pick up the rotated AHRS view
+            self.reboot_sitl()
+        self.change_mode('QLOITER')
+        self.wait_ready_to_arm()
+        self.arm_vehicle()
+        self.fly_mission(mission_file, strict=False, quadplane=quadplane, mission_timeout=400.0)
+        self.wait_disarmed()
+
     def tests(self):
         '''return list of all tests'''
         ret = super(AutoTestPlane, self).tests()
@@ -5425,6 +5463,7 @@ class AutoTestPlane(vehicle_test_suite.TestSuite):
             self.TerrainRally,
             self.MAV_CMD_NAV_LOITER_UNLIM,
             self.MAV_CMD_NAV_RETURN_TO_LAUNCH,
+            self.TailsitterTest,
         ])
         return ret
 
