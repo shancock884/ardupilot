@@ -687,17 +687,19 @@ bool Plane::verify_nav_wp(const AP_Mission::Mission_Command& cmd)
     }
     const float wp_dist = current_loc.get_distance(flex_next_WP_loc);
     if (wp_dist <= acceptance_distance_m) {
-        gcs().send_text(MAV_SEVERITY_INFO, "Reached waypoint #%i dist %um",
+        gcs().send_text(MAV_SEVERITY_INFO, "Reached waypoint #%i dist %um acc %1.f",
                           (unsigned)mission.get_current_nav_cmd().index,
-                          (unsigned)current_loc.get_distance(flex_next_WP_loc));
+                          (unsigned)current_loc.get_distance(flex_next_WP_loc),
+                          (double)acceptance_distance_m);
         return true;
 	}
 
     // have we flown past the waypoint?
     if (current_loc.past_interval_finish_line(prev_WP_loc, flex_next_WP_loc)) {
-        gcs().send_text(MAV_SEVERITY_INFO, "Passed waypoint #%i dist %um",
+        gcs().send_text(MAV_SEVERITY_INFO, "Passed waypoint #%i dist %um acc %1.f",
                           (unsigned)mission.get_current_nav_cmd().index,
-                          (unsigned)current_loc.get_distance(flex_next_WP_loc));
+                          (unsigned)current_loc.get_distance(flex_next_WP_loc),
+                          (double)acceptance_distance_m);
         return true;
     }
 
