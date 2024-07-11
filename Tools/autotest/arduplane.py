@@ -5344,7 +5344,7 @@ class AutoTestPlane(vehicle_test_suite.TestSuite):
         mission_file = "basic.txt"
         quadplane = self.get_parameter('Q_ENABLE')
         if quadplane:
-            #mission_file = "basic-quadplane.txt"
+            #mission_file = "auto-app-copter-only-with-intermediate.txt"
             mission_file = "auto-app.txt"
         tailsitter = self.get_parameter('Q_TAILSIT_ENABLE')
         if tailsitter:
