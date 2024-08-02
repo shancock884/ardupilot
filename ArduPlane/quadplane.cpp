@@ -543,6 +543,10 @@ const AP_Param::GroupInfo QuadPlane::var_info2[] = {
     AP_GROUPINFO("LAND_SPD_THR", 40, QuadPlane, descend_speed_threshold, 3.0f),
 
     AP_GROUPINFO("LAND_OSHT_THR", 41, QuadPlane, overshoot_threshold, 2.0f),
+    // cm/s
+    AP_GROUPINFO("LAND_XY_SPD", 42, QuadPlane, qland_xy_speed, 500.0f),
+    // cm/s/s
+    AP_GROUPINFO("LAND_XY_ACC", 43, QuadPlane, qland_xy_accel, 300.0f),
 
     AP_GROUPEND
 };
@@ -2269,7 +2273,12 @@ void QuadPlane::run_xy_controller(float accel_limit)
         // allow for accel limit override
         accel_cmss = MAX(accel_cmss, accel_limit*100);
     }
-    const float speed_cms = wp_nav->get_default_speed_xy();
+    float speed_cms = wp_nav->get_default_speed_xy();
+    if (in_vtol_land_descent()) {
+        speed_cms = qland_xy_speed;
+        if (is_positive(qland_xy_accel))
+            accel_cmss = MIN(accel_cmss, qland_xy_accel);
+    }
     pos_control->set_max_speed_accel_xy(speed_cms, accel_cmss);
     pos_control->set_correction_speed_accel_xy(speed_cms, accel_cmss);
     if (!pos_control->is_active_xy()) {
