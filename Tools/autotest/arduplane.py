@@ -5350,6 +5350,7 @@ class AutoTestPlane(vehicle_test_suite.TestSuite):
         if tailsitter:
             # tailsitter needs extra re-boot to pick up the rotated AHRS view
             self.reboot_sitl()
+        #self.set_parameter('SIM_WIND_SPD', 5)
         self.change_mode('QLOITER')
         self.wait_ready_to_arm()
         self.arm_vehicle()
