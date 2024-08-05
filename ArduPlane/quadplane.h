@@ -317,6 +317,8 @@ private:
     AP_Float descend_dist_threshold;
     AP_Float descend_speed_threshold;
     AP_Float overshoot_threshold;
+    AP_Float qland_final_xy_speed;
+    AP_Float qland_final_xy_accel;
 
     // transition failure handling
     struct TRANS_FAIL {
