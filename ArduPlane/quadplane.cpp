@@ -4277,7 +4277,7 @@ bool SLT_Transition::show_vtol_view() const
 }
 
 /*
-  return the PILOT_VELZ_MAX_DN value if non zero, otherwise returns the PILOT_VELZ_MAX value.
+  return the Q_PILOT_SPD_DN value if non zero, otherwise returns the Q_PILOT_SPD_UP value.
   return is in cm/s
 */
 uint16_t QuadPlane::get_pilot_velocity_z_max_dn() const
