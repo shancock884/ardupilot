@@ -161,6 +161,13 @@ uint32_t NavEKF3_core::getLastVelNorthEastReset(Vector2f &vel) const
     return lastVelReset_ms;
 }
 
+// returns true if the time of the last reset of either yaw, NE or D position, or NE
+// velocity is within the last 1 second
+bool NavEKF3_core::recentReset() const
+{
+    return filterStatus.flags.recent_reset;
+}
+
 // return the NED wind speed estimates in m/s (positive is air moving in the direction of the axis)
 // returns true if wind state estimation is active
 bool NavEKF3_core::getWind(Vector3f &wind) const

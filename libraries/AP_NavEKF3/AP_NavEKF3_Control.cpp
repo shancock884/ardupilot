@@ -786,6 +786,10 @@ void  NavEKF3_core::updateFilterStatus(void)
                                             (imuSampleTime_ms - lastTasPassTime_ms) > 3000;
     status.flags.initalized = status.flags.initalized || healthy();
     status.flags.dead_reckoning = (PV_AidingMode != AID_NONE) && doingWindRelNav && !((doingFlowNav && gndOffsetValid) || doingNormalGpsNav || doingBodyVelNav);
+    // indicate if the time of the last reset of either yaw, NE or D position, or NE
+    // velocity is within the last 1 seconds
+    uint32_t lastReset_ms = MAX(MAX(lastYawReset_ms, lastPosReset_ms), MAX(lastPosResetD_ms, lastVelReset_ms));
+    status.flags.recent_reset = (imuSampleTime_ms - lastReset_ms) <= 1000;
 
     filterStatus.value = status.value;
 }

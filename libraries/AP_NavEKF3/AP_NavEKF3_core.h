@@ -405,6 +405,10 @@ public:
     // returns the time of the last reset or 0 if no reset has ever occurred
     uint32_t getLastVelNorthEastReset(Vector2f &vel) const;
 
+    // returns true if the time of the last reset of either yaw, NE or D position, or NE
+    // velocity is within the last 1 second
+    bool recentReset() const;
+
     // report any reason for why the backend is refusing to initialise
     const char *prearm_failure_reason(void) const;
 
