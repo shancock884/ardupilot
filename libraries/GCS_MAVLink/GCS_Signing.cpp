@@ -52,6 +52,8 @@ bool GCS_MAVLINK::signing_key_save(const struct SigningKey &key)
 
 bool GCS_MAVLINK::signing_key_load(struct SigningKey &key)
 {
+    return false;
+    /*
     if (_signing_storage.size() < sizeof(key)) {
         return false;
     }
@@ -61,7 +63,7 @@ bool GCS_MAVLINK::signing_key_load(struct SigningKey &key)
     if (key.magic != SIGNING_KEY_MAGIC) {
         return false;
     }
-    return true;
+    return true;*/
 }
 
 /*
