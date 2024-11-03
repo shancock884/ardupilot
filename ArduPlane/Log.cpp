@@ -165,6 +165,7 @@ struct PACKED log_Nav_Tuning {
     int32_t target_alt_wp;
     int32_t target_alt_tecs;
     int32_t target_airspeed;
+    uint8_t terrain_following;
 };
 
 // Write a navigation tuning packet
@@ -185,6 +186,7 @@ void Plane::Log_Write_Nav_Tuning()
         target_alt_wp       : next_WP_loc.alt,
         target_alt_tecs     : tecs_target_alt_cm,
         target_airspeed     : target_airspeed_cm,
+        terrain_following   : target_altitude.terrain_following,
     };
     logger.WriteBlock(&pkt, sizeof(pkt));
 }
@@ -337,7 +339,7 @@ const struct LogStructure Plane::log_structure[] = {
 // @Field: TAT: target altitude TECS
 // @Field: TAsp: target airspeed
     { LOG_NTUN_MSG, sizeof(log_Nav_Tuning),         
-      "NTUN", "QfcccfffLLeee",  "TimeUS,Dist,TBrg,NavBrg,AltE,XT,XTi,AsE,TLat,TLng,TAW,TAT,TAsp", "smddmmmnDUmmn", "F0BBB0B0GG000" , true },
+      "NTUN", "QfcccfffLLeeeB",  "TimeUS,Dist,TBrg,NavBrg,AltE,XT,XTi,AsE,TLat,TLng,TAW,TAT,TAsp,F", "smddmmmnDUmmn-", "F0BBB0B0GG000-" , true },
 
 // @LoggerMessage: ATRP
 // @Description: Plane AutoTune
